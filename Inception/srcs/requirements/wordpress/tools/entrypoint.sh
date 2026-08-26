@@ -27,6 +27,17 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --admin_password="$(cat /run/secrets/credentials | tail -n 1)" \
         --admin_email="meaydino@student.42.fr" \
         --allow-root
+
+    # İkinci kullanıcıyı oluştur (editor rolü — admin değil)
+    WP_USER="$(cat /run/secrets/wp_user_credentials | head -n 1)"
+    WP_PASS="$(cat /run/secrets/wp_user_credentials | tail -n 1)"
+    php -d memory_limit=512M /usr/local/bin/wp user create \
+        "$WP_USER" \
+        "${WP_USER}@student.42.fr" \
+        --role=editor \
+        --user_pass="$WP_PASS" \
+        --path=/var/www/html \
+        --allow-root
 fi
 
 # PHP-FPM'i ön planda (foreground) çalıştır
