@@ -1,0 +1,78 @@
+
+services:
+  nginx:
+    build: ./requirements/nginx
+    image: nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress_volume:/var/www/html
+    depends_on:
+      - wordpress
+    networks:
+      - inception_net
+
+  wordpress:
+    build: ./requirements/wordpress
+    image: wordpress
+    container_name: wordpress
+    restart: always
+    volumes:
+      - wordpress_volume:/var/www/html
+    environment:
+      - DOMAIN_NAME=meaydino.42.fr
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wp_user
+    secrets:
+      - db_password
+      - db_root_password
+      - credentials
+    depends_on:
+      - mariadb
+    networks:
+      - inception_net
+
+  mariadb:
+    build: ./requirements/mariadb
+    image: mariadb
+    container_name: mariadb
+    restart: always
+    volumes:
+      - mariadb_volume:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wp_user
+    secrets:
+      - db_password
+      - db_root_password
+    networks:
+      - inception_net
+
+networks:
+  inception_net:
+    driver: bridge
+
+volumes:
+  wordpress_volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/meaydino/data/wordpress
+
+  mariadb_volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/meaydino/data/mariadb
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
