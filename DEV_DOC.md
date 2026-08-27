@@ -67,14 +67,15 @@ make all
 # Build images only (without starting)
 make build
 
-# Stop containers (preserve volumes)
+# Stop containers (preserve data and volumes)
 make down
-
-# Full reset: stop, remove volumes, recreate
-make re
-
-# Remove images and volumes
 make clean
+
+# Full clean: stop containers, remove images, volumes, and host data
+make fclean
+
+# Full reset: fclean and build from scratch
+make re
 ```
 
 The Makefile calls:

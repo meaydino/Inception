@@ -53,8 +53,9 @@ make all
 
 ```bash
 make down    # Stop containers
-make re      # Full rebuild (removes volumes and data)
-make clean   # Remove images and volumes
+make clean   # Stop containers (preserves data and images)
+make fclean  # Full clean (removes images, volumes, and data)
+make re      # Full reset (fclean + all)
 ```
 
 ### Access

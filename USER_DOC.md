@@ -26,19 +26,15 @@ This will:
 2. Build Docker images
 3. Start all containers in the background
 
-### Stop (keep data)
+### Stop / Clean (keep data)
 ```bash
-make down
+make down    # or make clean
 ```
 
-### Full reset (deletes all data and volumes)
+### Full reset / Full clean (deletes all data, volumes, and images)
 ```bash
-make re
-```
-
-### Remove everything (images + volumes)
-```bash
-make clean
+make fclean  # Remove containers, images, volumes, and data
+make re      # Full rebuild from scratch (fclean + all)
 ```
 
 ---
