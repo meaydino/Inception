@@ -14,11 +14,11 @@
 
 | File | Purpose |
 |---|---|
-| `Inception/srcs/.env` | Environment variables (domain, DB name, DB user) |
-| `Inception/secrets/credentials.txt` | WordPress admin credentials |
-| `Inception/secrets/wp_user_credentials.txt` | WordPress editor credentials |
-| `Inception/secrets/db_password.txt` | DB user password |
-| `Inception/secrets/db_root_password.txt` | DB root password |
+| `srcs/.env` | Environment variables (domain, DB name, DB user) |
+| `secrets/credentials.txt` | WordPress admin credentials |
+| `secrets/wp_user_credentials.txt` | WordPress editor credentials |
+| `secrets/db_password.txt` | DB user password |
+| `secrets/db_root_password.txt` | DB root password |
 
 ### Setting Up Secrets
 
@@ -26,21 +26,21 @@ Create the `secrets/` files with your own values:
 
 ```bash
 # Admin user (must NOT contain "admin" or "administrator")
-echo "meaydino_wp" > Inception/secrets/credentials.txt
-echo "MyAdminPass42!" >> Inception/secrets/credentials.txt
+echo "meaydino" > secrets/credentials.txt
+echo "MyAdminPass42!" >> secrets/credentials.txt
 
 # Editor user
-echo "wp_editor" > Inception/secrets/wp_user_credentials.txt
-echo "Editor@Inception42!" >> Inception/secrets/wp_user_credentials.txt
+echo "wp_editor" > secrets/wp_user_credentials.txt
+echo "Editor@Inception42!" >> secrets/wp_user_credentials.txt
 
 # Database passwords
-echo "DbUserPass42!" > Inception/secrets/db_password.txt
-echo "DbRootPass42!" > Inception/secrets/db_root_password.txt
+echo "DbUserPass42!" > secrets/db_password.txt
+echo "DbRootPass42!" > secrets/db_root_password.txt
 ```
 
 ### .env Setup
 
-The `Inception/srcs/.env` file should look like:
+The `srcs/.env` file should look like:
 
 ```env
 DOMAIN_NAME=meaydino.42.fr
@@ -59,8 +59,6 @@ echo "127.0.0.1 meaydino.42.fr" | sudo tee -a /etc/hosts
 ## Building and Launching with Makefile and Docker Compose
 
 ```bash
-cd Inception
-
 # Build all images and start containers (foreground build, detached run)
 make all
 
@@ -132,7 +130,7 @@ These are **Docker named volumes** using `driver: local` with `type: none` and `
 ### Data Persistence
 
 - Data persists across `make down` / `make all` cycles.
-- `make re` and `make clean` **delete** `/home/meaydino/data/` and remove volumes — **all WordPress content and the database are lost**.
+- `make re` and `make fclean` **delete** `/home/meaydino/data/` and remove volumes — **all WordPress content and the database are lost**.
 - The MariaDB initialization script runs only when `/var/lib/mysql/mysql` does not exist (i.e., on first boot or after a full reset).
 
 ### TLS Certificate
@@ -144,31 +142,30 @@ The SSL certificate is generated automatically by the NGINX entrypoint using `op
 ## Directory Structure
 
 ```
-inception/                        ← Git repository root
+.                                 ← Git repository root
 ├── .gitignore
+├── Makefile
 ├── README.md
 ├── USER_DOC.md
 ├── DEV_DOC.md
-└── Inception/
-    ├── Makefile
-    ├── secrets/                  ← NOT committed to git
-    │   ├── credentials.txt
-    │   ├── wp_user_credentials.txt
-    │   ├── db_password.txt
-    │   └── db_root_password.txt
-    └── srcs/
-        ├── .env                  ← NOT committed to git
-        ├── docker-compose.yml
-        └── requirements/
-            ├── nginx/
-            │   ├── Dockerfile
-            │   ├── conf/nginx.conf
-            │   └── tools/entrypoint.sh
-            ├── mariadb/
-            │   ├── Dockerfile
-            │   ├── conf/mariadb.cnf
-            │   └── tools/entrypoint.sh
-            └── wordpress/
-                ├── Dockerfile
-                └── tools/entrypoint.sh
+├── secrets/                      ← NOT committed to git
+│   ├── credentials.txt
+│   ├── wp_user_credentials.txt
+│   ├── db_password.txt
+│   └── db_root_password.txt
+└── srcs/
+    ├── .env                      ← NOT committed to git
+    ├── docker-compose.yml
+    └── requirements/
+        ├── nginx/
+        │   ├── Dockerfile
+        │   ├── conf/nginx.conf
+        │   └── tools/entrypoint.sh
+        ├── mariadb/
+        │   ├── Dockerfile
+        │   ├── conf/mariadb.cnf
+        │   └── tools/entrypoint.sh
+        └── wordpress/
+            ├── Dockerfile
+            └── tools/entrypoint.sh
 ```

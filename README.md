@@ -36,7 +36,7 @@ Bind mounts depend on a specific host path and are not portable. Docker named vo
 
 - Docker and Docker Compose installed
 - Domain `meaydino.42.fr` pointing to `127.0.0.1` in `/etc/hosts`
-- Secrets files present in `Inception/secrets/`
+- Secrets files present in `secrets/`
 
 ### Setup
 
@@ -45,7 +45,6 @@ Bind mounts depend on a specific host path and are not portable. Docker named vo
 echo "127.0.0.1 meaydino.42.fr" | sudo tee -a /etc/hosts
 
 # 2. Build and start all services
-cd Inception
 make all
 ```
 

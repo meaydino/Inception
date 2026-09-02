@@ -18,7 +18,6 @@ Only NGINX is accessible from the outside. WordPress and MariaDB communicate int
 
 ### Start
 ```bash
-cd Inception
 make all
 ```
 This will:
@@ -82,7 +81,7 @@ docker logs wordpress
 docker logs mariadb
 
 # Check container health
-docker compose -f Inception/srcs/docker-compose.yml ps
+docker compose -f srcs/docker-compose.yml ps
 ```
 
 Expected output of `docker ps` should show three containers (`nginx`, `wordpress`, `mariadb`) all with status `Up`.
