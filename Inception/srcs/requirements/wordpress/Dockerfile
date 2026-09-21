@@ -1,26 +1,22 @@
-FROM alpine:3.18
+FROM debian:bookworm
 
-RUN apk update && apk add --no-cache \
-    php \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     php-fpm \
-    php-mysqli \
+    php-cli \
+    php-mysql \
     php-mbstring \
-    php-json \
-    php-session \
     php-curl \
     php-gd \
     php-xml \
     php-intl \
     php-zip \
-    php-phar \
     wget \
     mariadb-client \
-    unzip
+    unzip \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN sed -i "s|listen = 127.0.0.1:9000|listen = 0.0.0.0:9000|g" /etc/php81/php-fpm.d/www.conf || \
-    sed -i "s|listen = 127.0.0.1:9000|listen = 0.0.0.0:9000|g" /etc/php82/php-fpm.d/www.conf || \
-    sed -i "s|listen = 127.0.0.1:9000|listen = 0.0.0.0:9000|g" /etc/php8/php-fpm.d/www.conf || \
-    sed -i "s|listen = /([^/]*)/([[:alnum:]]*).sock|listen = 0.0.0.0:9000|g" /etc/php81/php-fpm.d/www.conf || true
+RUN sed -i 's|^listen = .*|listen = 0.0.0.0:9000|' /etc/php/8.2/fpm/pool.d/www.conf
 
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \

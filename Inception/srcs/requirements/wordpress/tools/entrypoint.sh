@@ -4,9 +4,15 @@ if [ ! -f /var/www/html/wp-config.php ]; then
     chown -R www-data:www-data /var/www/html 2>/dev/null || true
     chmod -R 755 /var/www/html
 
-    php -d memory_limit=512M /usr/local/bin/wp core download --path=/var/www/html --allow-root
+    if [ ! -f /var/www/html/wp-includes/version.php ]; then
+        php -d memory_limit=512M /usr/local/bin/wp core download --path=/var/www/html --allow-root
+    fi
 
-    until mariadb-admin ping -h"mariadb" --silent; do
+    until mariadb-admin ping \
+        -h"mariadb" \
+        -u"$MYSQL_USER" \
+        -p"$(cat /run/secrets/db_password)" \
+        --silent; do
         sleep 1
     done
 
@@ -27,6 +33,13 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --admin_email="meaydino@student.42.fr" \
         --allow-root
 
+    php -d memory_limit=512M /usr/local/bin/wp option update comment_moderation 1 \
+        --path=/var/www/html \
+        --allow-root
+    php -d memory_limit=512M /usr/local/bin/wp option update comment_previously_approved 0 \
+        --path=/var/www/html \
+        --allow-root
+
     WP_USER="$(cat /run/secrets/wp_user_credentials | head -n 1)"
     WP_PASS="$(cat /run/secrets/wp_user_credentials | tail -n 1)"
     php -d memory_limit=512M /usr/local/bin/wp user create \
@@ -38,4 +51,4 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --allow-root
 fi
 
-exec php-fpm81 -F || exec php-fpm82 -F || exec php-fpm -F
+exec php-fpm8.2 -F || exec php-fpm -F

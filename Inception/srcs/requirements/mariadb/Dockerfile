@@ -1,12 +1,15 @@
-FROM alpine:3.18
+FROM debian:bookworm
 
-RUN apk update && apk add --no-cache mariadb mariadb-client
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    mariadb-server \
+    mariadb-client \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /var/run/mysqld && \
-    chown -R mysql:mysql /var/run/mysqld && \
-    chmod 777 /var/run/mysqld
+RUN mkdir -p /run/mysqld && \
+    chown -R mysql:mysql /run/mysqld && \
+    chmod 755 /run/mysqld
 
-COPY conf/mariadb.cnf /etc/my.cnf.d/mariadb.cnf
+COPY conf/mariadb.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
