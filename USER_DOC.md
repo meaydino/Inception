@@ -94,13 +94,13 @@ All passwords and usernames are stored inside the `secrets/` directory. Each sec
 
 | File Path | Description | Default Content Format |
 |---|---|---|
-| `secrets/credentials.txt` | WordPress Administrator credentials | Line 1: Username (`meaydino`)<br>Line 2: Password |
-| `secrets/wp_user_credentials.txt` | WordPress Editor credentials | Line 1: Username (`wp_editor`)<br>Line 2: Password |
+| `secrets/wp_admin_password.txt` | WordPress Administrator password | Single Line: Admin password |
+| `secrets/wp_user_password.txt` | WordPress Editor user password | Single Line: Editor password |
 | `secrets/db_password.txt` | MariaDB WordPress User Password | Single Line: DB User password |
 | `secrets/db_root_password.txt` | MariaDB Root Password | Single Line: DB Root password |
 
 > [!IMPORTANT]
-> - Per 42 evaluation rules, the Administrator username **MUST NOT** contain `admin`, `Admin`, or `administrator`.
+> - Per 42 evaluation rules, the Administrator username (`WP_ADMIN_USER` in `srcs/.env`) **MUST NOT** contain `admin`, `Admin`, or `administrator`.
 > - Never commit plaintext secret files into a public Git repository.
 
 ### How to Change a Password
@@ -158,8 +158,8 @@ The output will confirm that volumes point to `/home/meaydino/data/wordpress` an
 ### 1. Logging into the Admin Panel
 1. Open [https://meaydino.42.fr/wp-admin](https://meaydino.42.fr/wp-admin) in your browser.
 2. Enter the administrator credentials:
-   - **Username:** `meaydino` (or read line 1 of `secrets/credentials.txt`)
-   - **Password:** (read line 2 of `secrets/credentials.txt`)
+   - **Username:** `meaydino` (configured in `srcs/.env` as `WP_ADMIN_USER`)
+   - **Password:** (read from `secrets/wp_admin_password.txt`)
 3. Click **Log In**.
 
 ### 2. Editing or Creating a Page / Post

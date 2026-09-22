@@ -162,9 +162,9 @@ make --version
 
 2. **Verify Environment Variables and Secrets:**
    Ensure the following files are present in the repository:
-   - `srcs/.env` (Database name, default user, domain)
-   - `secrets/credentials.txt` (WordPress Admin credentials)
-   - `secrets/wp_user_credentials.txt` (WordPress Editor credentials)
+   - `srcs/.env` (Domain, database name/user, WordPress title, administrator & user details)
+   - `secrets/wp_admin_password.txt` (WordPress Admin password)
+   - `secrets/wp_user_password.txt` (WordPress Editor user password)
    - `secrets/db_password.txt` (Database user password)
    - `secrets/db_root_password.txt` (Database root password)
 

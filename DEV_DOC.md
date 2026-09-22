@@ -55,8 +55,8 @@ docker compose version
 ├── USER_DOC.md                             # End-user and administrator manual
 ├── DEV_DOC.md                              # Technical specifications and developer documentation
 ├── secrets/                                # Sensitive authentication data (Docker Secrets)
-│   ├── credentials.txt                     # WordPress Administrator user credentials
-│   ├── wp_user_credentials.txt            # WordPress Editor user credentials
+│   ├── wp_admin_password.txt               # WordPress Administrator password
+│   ├── wp_user_password.txt                # WordPress Editor user password
 │   ├── db_password.txt                     # WordPress MySQL user password
 │   └── db_root_password.txt                # MariaDB root database password
 └── srcs/
@@ -91,6 +91,11 @@ The `.env` file contains non-sensitive deployment parameters injected into `dock
 DOMAIN_NAME=meaydino.42.fr
 MYSQL_DATABASE=wordpress
 MYSQL_USER=wp_user
+WP_TITLE=Inception
+WP_ADMIN_USER=meaydino
+WP_ADMIN_EMAIL=meaydino@student.42.fr
+WP_USER=wp_editor
+WP_USER_EMAIL=wp_editor@student.42.fr
 ```
 
 ### 3.2 Secrets Management (`secrets/`)
@@ -98,10 +103,10 @@ Docker Secrets decouple sensitive credentials from environment variables. They a
 
 | Secret Name | Source File | Consuming Services | Expected File Structure |
 |---|---|---|---|
-| `credentials` | `secrets/credentials.txt` | `wordpress` | Line 1: `meaydino`<br>Line 2: `<admin_password>` |
-| `wp_user_credentials` | `secrets/wp_user_credentials.txt` | `wordpress` | Line 1: `wp_editor`<br>Line 2: `<editor_password>` |
-| `db_password` | `secrets/db_password.txt` | `wordpress`, `mariadb` | Line 1: `<database_user_password>` |
-| `db_root_password` | `secrets/db_root_password.txt` | `wordpress`, `mariadb` | Line 1: `<database_root_password>` |
+| `wp_admin_password` | `secrets/wp_admin_password.txt` | `wordpress` | Single Line: WordPress Admin password |
+| `wp_user_password` | `secrets/wp_user_password.txt` | `wordpress` | Single Line: WordPress Editor password |
+| `db_password` | `secrets/db_password.txt` | `wordpress`, `mariadb` | Single Line: `<database_user_password>` |
+| `db_root_password` | `secrets/db_root_password.txt` | `wordpress`, `mariadb` | Single Line: `<database_root_password>` |
 
 ---
 
@@ -140,11 +145,16 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
+      - WP_TITLE=${WP_TITLE}
+      - WP_ADMIN_USER=${WP_ADMIN_USER}
+      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
+      - WP_USER=${WP_USER}
+      - WP_USER_EMAIL=${WP_USER_EMAIL}
     secrets:
       - db_password
       - db_root_password
-      - credentials
-      - wp_user_credentials
+      - wp_admin_password
+      - wp_user_password
     depends_on:
       - mariadb
     networks:
@@ -184,6 +194,16 @@ volumes:
       type: none
       o: bind
       device: /home/meaydino/data/mariadb
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt
 ```
 
 ---
